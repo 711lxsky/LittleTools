@@ -15,7 +15,8 @@ func GetWorkDirAndBuildImportantPath() {
 	}
 
 	// 提取 main.go 文件的上上层目录
-	parentDir := filepath.Dir(filepath.Dir(currentFile))
+	//parentDir := filepath.Dir(filepath.Dir(currentFile))
+	parentDir := filepath.Dir(currentFile)
 	config.WorkPath = parentDir
 	// 创建 img 目录
 	config.ImageDirPath = buildPath(parentDir, config.ImageDir)
