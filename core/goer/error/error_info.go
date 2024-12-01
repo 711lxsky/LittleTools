@@ -8,4 +8,6 @@ var (
 	FileSaveError                   = "File save error"
 	DataBaseSaveError               = "Data base save error"
 	DataBaseQueryError              = "Data base query error"
+	ConfirmUserPassWordNotSame      = "User confirm password is not correct"
+	RegisterUserNameLengthError     = "The length of user's name error"
 )
