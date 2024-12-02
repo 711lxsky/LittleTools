@@ -1,6 +1,6 @@
 package config
 
-import "github.com/jinzhu/gorm"
+import "gorm.io/gorm"
 
 // RunPort 运行端口
 var RunPort = ":8228"
@@ -19,6 +19,11 @@ var (
 )
 
 var (
+	NormalClipExpireDays = 3
+	UserClipMaxCapacity  = 200
+)
+
+var (
 	IdentifierLength  = 6
 	FileNameMaxLength = 10
 	FileNameMinLength = 4
@@ -27,5 +32,28 @@ var (
 )
 
 var (
+	PageDataDefaultNum  = 1
+	PageDataDefaultSize = 10
+)
+
+var (
 	ImageDir = "image"
+)
+
+var (
+	HeaderContentType = "Content-Type"
+	MultipartForm     = "multipart/form-data"
+	ApplicationJson   = "application/json"
+)
+
+var (
+	TokenExpireTimeDays      = 14
+	TokenClaimAuthorized     = "authorized"
+	TokenClaimUserId         = "userId"
+	TokenClaimAuthority      = "authority"
+	TokenClaimAuthorityValue = "711lxsky"
+	TokenClaimExpireTime     = "expireTime"
+	TokenSecret              = "KWrY8RHEjc6^81gd"
+	TokenName                = "Authorization"
+	TokenHeader              = "Bearer "
 )

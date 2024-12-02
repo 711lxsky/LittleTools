@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/jinzhu/gorm"
 	"goer/config"
 	myErr "goer/error"
+	"goer/service"
 	"goer/util"
+	"gorm.io/gorm"
 	"log"
 )
 
@@ -14,12 +15,20 @@ func main() {
 	// 初始化数据库连接
 	util.InitDB()
 	// 使用defer确保在函数结束时关闭数据库连接
-	defer func(*gorm.DB) {
-		err := config.DataBase.Close()
-		if err != nil {
-			panic(myErr.DataBaseCannotBeCorrectlyClosed + err.Error())
+	defer func(db *gorm.DB) {
+		if db != nil {
+			sqlDB, err := db.DB()
+			if err != nil {
+				panic(myErr.DataBaseCannotBeCorrectlyClosed + err.Error())
+			}
+			err = sqlDB.Close()
+			if err != nil {
+				panic(myErr.DataBaseCannotBeCorrectlyClosed + err.Error())
+			}
 		}
 	}(config.DataBase)
+	// 开启定时任务
+	service.TimedDeleteExpiredClips()
 	// 初始化gin服务
 	engine := util.InitGin()
 	InitRouter(engine)

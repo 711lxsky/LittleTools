@@ -1,9 +1,18 @@
 package reqeust
 
-type NormalClipboardRequest struct {
-	Content string `json:"text"`
+type ImageNormalClipRequest struct {
+	Password string `json:"password"`
+}
+
+type TextNormalClipRequest struct {
+	Content  string `json:"text"`
+	Password string `json:"password"`
+}
+
+type GetNormalClipRequest struct {
+	Password string `json:"password"`
 }
 
 var (
-	NormalClipFileName = "pic"
+	ClipFileName = "pic"
 )
