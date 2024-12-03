@@ -28,8 +28,8 @@ func main() {
 		}
 	}(config.DataBase)
 	// 开启定时任务
-	service.TimedDeleteExpiredClips()
-	service.TimedRemindTodoWithEmail()
+	go service.TimedDeleteExpiredClips()
+	go service.TimedRemindTodoWithEmail()
 	// 初始化gin服务
 	engine := util.InitGin()
 	InitRouter(engine)

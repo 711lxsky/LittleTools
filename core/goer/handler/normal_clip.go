@@ -16,8 +16,6 @@ import (
 	"strings"
 )
 
-// TODO 这里加入了密码逻辑，还需要进行测试，检查前端能否发出对应格式的请求来，以及是否支持发送与不发送密码之间任意切换
-
 // NormalClipboardUse 解析剪切板请求
 func NormalClipboardUse(c *gin.Context) {
 	var clip *model.Clip
@@ -65,10 +63,14 @@ func NormalClipboardUse(c *gin.Context) {
 			ResponseFail(c, http.StatusBadRequest, MyErr.JSONParseError, err.Error())
 			return
 		}
-		encryptPassword, errEP := util.HashEncrypt(TNCRequest.Password)
-		if errEP != nil {
-			ResponseFail(c, http.StatusInternalServerError, MyErr.PasswordEncryptError, errEP.Error())
-			return
+		encryptPassword := ""
+		if TNCRequest.Password != nil {
+			var errEP error
+			encryptPassword, errEP = util.HashEncrypt(*TNCRequest.Password)
+			if errEP != nil {
+				ResponseFail(c, http.StatusInternalServerError, MyErr.PasswordEncryptError, errEP.Error())
+				return
+			}
 		}
 		// 保存一个文本类型的记录到剪切板数据库中
 		clip = &model.Clip{

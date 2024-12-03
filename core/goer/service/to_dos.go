@@ -77,6 +77,7 @@ func UpdateTodo(userId, todoId int, Title, Content string, remindAt *time.Time, 
 }
 
 func TimedRemindTodoWithEmail() {
+	log.Printf("定时提醒待办事项")
 	c := cron.New()
 	if _, err := c.AddFunc("@every 1m", func() {
 		var todos []model.Todo
@@ -96,6 +97,8 @@ func TimedRemindTodoWithEmail() {
 		log.Panicf("failed to add cron job: %v", err)
 	}
 	c.Start()
+	// 防止主程序退出
+	select {}
 }
 
 func sendRemindEmail(todo model.Todo) {

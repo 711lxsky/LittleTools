@@ -24,7 +24,7 @@ var (
 )
 
 var (
-	IdentifierLength  = 6
+	IdentifierLength  = 5
 	FileNameMaxLength = 10
 	FileNameMinLength = 4
 	UserNameMinLength = 3

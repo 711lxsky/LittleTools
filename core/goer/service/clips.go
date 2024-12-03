@@ -15,6 +15,7 @@ func GetClipByIdentifier(identifier string) (clip *model.Clip, err error) {
 }
 
 func TimedDeleteExpiredClips() {
+	log.Printf("定时删除过期的剪贴板数据")
 	// 创建调度器
 	c := cron.New()
 	// 添加定时任务
