@@ -3,8 +3,8 @@ package reqeust
 import "goer/config"
 
 type PageDataRequest struct {
-	PageNum  int
-	PageSize int
+	PageNum  int `json:"pageNum"`
+	PageSize int `json:"pageSize"`
 }
 
 func JudgeAndSetDefaultPageDataRequest(pageDataRequest *PageDataRequest) *PageDataRequest {
@@ -18,5 +18,9 @@ func JudgeAndSetDefaultPageDataRequest(pageDataRequest *PageDataRequest) *PageDa
 }
 
 type DeleteDataRequest struct {
-	Id int `json:"id"`
+	Id *int `json:"id"`
+}
+
+type ViewDetailRequest struct {
+	Id *int `json:"id"`
 }

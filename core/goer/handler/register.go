@@ -33,8 +33,13 @@ func UserRegister(c *gin.Context) {
 	}
 	// 检查用户名是否符合要求
 	userName := purgeUserName(RURequest.UserName)
-	if err := checkUserName(userName); !errors.Is(err, MyErr.CommonError{}) {
-		ResponseFail(c, int(err.Code()), err.Msg(), "")
+	if err := checkUserName(userName); err != nil {
+		ResponseFail(c, http.StatusBadRequest, err.Error(), "")
+	}
+	// 检查邮箱
+	email := strings.TrimSpace(RURequest.Email)
+	if email != "" && !util.CheckEmailValid(email) {
+		ResponseFail(c, http.StatusBadRequest, MyErr.UserEmailError, "")
 		return
 	}
 	// 检查通过保存信息
@@ -46,6 +51,7 @@ func UserRegister(c *gin.Context) {
 	// 保存到数据库
 	newUser := &model.User{
 		UserName: userName,
+		Email:    email,
 		Password: hashedPassword,
 	}
 	if err := config.DataBase.Create(newUser).Error; err != nil {
@@ -59,23 +65,23 @@ func purgeUserName(userName string) string {
 	return strings.TrimSpace(html.EscapeString(userName))
 }
 
-func checkUserName(registerUserName string) MyErr.CommonError {
+func checkUserName(registerUserName string) error {
 	// 检查长度
 	n := len(registerUserName)
 	if n < config.UserNameMinLength || n > config.UserNameMaxLength {
 		// 长度不符合要求
-		return MyErr.NewErrorWithoutReason(http.StatusBadRequest, MyErr.RegisterUserNameLengthError)
+		return errors.New(MyErr.RegisterUserNameLengthError)
 	}
 	// 检查是否重复
 	_, err := service.GetUserByName(registerUserName)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		// 没有找到，可以
-		return MyErr.CommonError{}
+		return nil
 	} else if err != nil {
 		// 查询失败
-		return MyErr.NewError(http.StatusBadRequest, MyErr.DataBaseQueryError, err.Error())
+		return err
 	} else {
 		// 已经有了
-		return MyErr.NewErrorWithoutReason(http.StatusBadRequest, MyErr.UserNameExisted)
+		return errors.New(MyErr.UserNameExisted)
 	}
 }

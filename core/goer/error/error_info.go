@@ -13,8 +13,8 @@ var (
 	DataBaseDeleteError             = "Data base delete error"
 	DataBaseUpdateError             = "Data base update error"
 	ConfirmUserPassWordNotSame      = "User confirm password is not correct"
-	RegisterUserNameLengthError     = "The length of user's name error"
-	UserNameExisted                 = "User name is existed"
+	RegisterUserNameLengthError     = "the length of user's name error"
+	UserNameExisted                 = "the user name is existed"
 	PasswordEncryptError            = "Password encrypt error"
 	DataNotExist                    = "Data not exist"
 	PasswordError                   = "Password error"
@@ -25,4 +25,7 @@ var (
 	ContextError                    = "context error"
 	TypeAssertionError              = "type assertion error"
 	DataCannotModify                = "data cannot be modified"
+	DataCannotEmpty                 = "data cannot be empty"
+	UserEmailError                  = "user's email has error"
+	DataLogicError                  = "data logic error"
 )

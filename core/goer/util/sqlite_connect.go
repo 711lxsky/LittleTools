@@ -25,6 +25,7 @@ func InitDB() {
 		&model.Clip{},
 		&model.User{},
 		&model.UserClip{},
+		&model.Todo{},
 	); err != nil {
 		panic(err.Error())
 	}

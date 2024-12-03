@@ -10,6 +10,7 @@ import (
 	"goer/view"
 	"os"
 	"path/filepath"
+	"time"
 )
 
 func CountClipForUser(userId int) (int, error) {
@@ -88,5 +89,16 @@ func UpdateUserClip(userId, clipId int, content string) error {
 	if userClip.Type != model.ClipText {
 		return errors.New(MyErr.DataCannotModify)
 	}
-	return config.DataBase.Model(&model.UserClip{}).Where("user_id = ? and id = ?", userId, clipId).Update("content", content).Error
+	return config.DataBase.Model(&model.UserClip{}).
+		Where("user_id = ? and id = ?", userId, clipId).
+		Update("content", content).
+		Update("use_time", time.Now()).
+		Error
+}
+
+func UpdateUserClipUseTime(userId, clipId int) error {
+	return config.DataBase.Model(&model.UserClip{}).
+		Where("user_id = ? and id = ?", userId, clipId).
+		Update("use_time", time.Now()).
+		Error
 }

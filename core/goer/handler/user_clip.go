@@ -14,8 +14,6 @@ import (
 	"time"
 )
 
-// TODO 这里还有用户点击一个剪切版内容后更新使用时间的逻辑需要加上
-
 func AddUserClipboard(c *gin.Context) {
 	// 拿到用户id
 	userId := getUserIdFromContext(c)
@@ -116,8 +114,12 @@ func DeleteUserClip(c *gin.Context) {
 		ResponseFail(c, http.StatusBadRequest, MyErr.JSONParseError, err.Error())
 		return
 	}
+	if deleteRequest.Id == nil {
+		ResponseFail(c, http.StatusBadRequest, MyErr.DataCannotEmpty, "")
+		return
+	}
 	// 进行删除
-	if err := service.DeleteUserClip(userId, deleteRequest.Id); err != nil {
+	if err := service.DeleteUserClip(userId, *deleteRequest.Id); err != nil {
 		ResponseFail(c, http.StatusInternalServerError, MyErr.DataBaseDeleteError, err.Error())
 		return
 	}
@@ -136,8 +138,37 @@ func UpdateUserClipContent(c *gin.Context) {
 		ResponseFail(c, http.StatusBadRequest, MyErr.JSONParseError, err.Error())
 		return
 	}
+	if updateRequest.Id == nil {
+		ResponseFail(c, http.StatusBadRequest, MyErr.DataCannotEmpty, "")
+		return
+	}
 	// 这里只允许修改文本类型的剪切板内容，且只能修改为文本
-	if err := service.UpdateUserClip(userId, updateRequest.Id, updateRequest.Content); err != nil {
+	if err := service.UpdateUserClip(userId, *updateRequest.Id, updateRequest.Content); err != nil {
+		ResponseFail(c, http.StatusInternalServerError, MyErr.DataBaseUpdateError, err.Error())
+		return
+	}
+	ResponseSuccess(c)
+}
+
+func UpdateUserClipUseTime(c *gin.Context) {
+	// 获取用户id
+	userId := getUserIdFromContext(c)
+	if userId == MyErr.IntErrValue {
+		return
+	}
+	// 解析请求
+	var updateUTR *reqeust.UpdateUserClipUseTimeRequest
+	if err := c.ShouldBindJSON(&updateUTR); err != nil {
+		// 解析失败
+		ResponseFail(c, http.StatusBadRequest, MyErr.JSONParseError, err.Error())
+		return
+	}
+	if updateUTR.Id == nil {
+		ResponseFail(c, http.StatusBadRequest, MyErr.DataCannotEmpty, "")
+		return
+	}
+	// 更新使用时间
+	if err := service.UpdateUserClipUseTime(userId, *updateUTR.Id); err != nil {
 		ResponseFail(c, http.StatusInternalServerError, MyErr.DataBaseUpdateError, err.Error())
 		return
 	}

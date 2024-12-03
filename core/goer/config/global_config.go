@@ -57,3 +57,10 @@ var (
 	TokenName                = "Authorization"
 	TokenHeader              = "Bearer "
 )
+
+var (
+	EmailSendHost = "smtp.qq.com"
+	EmailSendPort = 25
+	EmailSendUser = ""
+	EmailSendPass = ""
+)
