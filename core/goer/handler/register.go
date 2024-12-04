@@ -35,6 +35,7 @@ func UserRegister(c *gin.Context) {
 	userName := purgeUserName(RURequest.UserName)
 	if err := checkUserName(userName); err != nil {
 		ResponseFail(c, http.StatusBadRequest, err.Error(), "")
+		return
 	}
 	// 检查邮箱
 	email := strings.TrimSpace(RURequest.Email)

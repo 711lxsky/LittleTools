@@ -13,7 +13,7 @@ var (
 	DataBaseDeleteError             = "Data base delete error"
 	DataBaseUpdateError             = "Data base update error"
 	ConfirmUserPassWordNotSame      = "User confirm password is not correct"
-	RegisterUserNameLengthError     = "the length of user's name error"
+	RegisterUserNameLengthError     = "the length of user's name has error"
 	UserNameExisted                 = "the user name is existed"
 	PasswordEncryptError            = "Password encrypt error"
 	DataNotExist                    = "Data not exist"

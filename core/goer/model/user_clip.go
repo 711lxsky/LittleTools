@@ -12,5 +12,5 @@ type UserClip struct {
 	UserId  int       `json:"userId" gorm:"type:int;not null;default:0"`    // 关联的用户id
 	Type    int       `json:"type" gorm:"type:int;not null;default:1"`      // 存储的数据类型
 	Content string    `json:"content" gorm:"type:text;not null;default:''"` // 存储的数据内容
-	UseTime time.Time `gorm:"type:text;default:CURRENT_TIMESTAMP"`          // 使用时间
+	UseTime time.Time `gorm:"type:datetime;default:CURRENT_TIMESTAMP"`      // 使用时间
 }

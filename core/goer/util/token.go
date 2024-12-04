@@ -1,10 +1,13 @@
 package util
 
 import (
+	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/golang-jwt/jwt/v5"
 	"goer/config"
 	MyErr "goer/error"
+	"reflect"
 	"time"
 )
 
@@ -35,7 +38,35 @@ func CheckTokenValid(tokenStr string) (*jwt.Token, error) {
 		return nil, err
 	}
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		if float64(time.Now().Unix()) > claims[config.TokenClaimExpireTime].(float64) {
+		expireTimeInterface, exists := claims[config.TokenClaimExpireTime]
+		if !exists {
+			return nil, errors.New(MyErr.TokenInvalid)
+		}
+		// 添加调试信息
+		fmt.Printf("expireTimeInterface type: %v, value: %v\n", reflect.TypeOf(expireTimeInterface), expireTimeInterface)
+		// 尝试将 expireTimeInterface 转换为 time.Time 类型
+		var expireTime time.Time
+		switch v := expireTimeInterface.(type) {
+		case time.Time:
+			expireTime = v
+		case float64:
+			expireTime = time.Unix(int64(v), 0)
+		case json.Number:
+			intValue, err := v.Int64()
+			if err != nil {
+				return nil, errors.New(MyErr.TokenInvalid)
+			}
+			expireTime = time.Unix(intValue, 0)
+		case string:
+			// 使用 time.RFC3339Nano 布局字符串解析字符串
+			expireTime, err = time.Parse(time.RFC3339Nano, v)
+			if err != nil {
+				return nil, errors.New(MyErr.TokenInvalid)
+			}
+		default:
+			return nil, errors.New(MyErr.TokenInvalid)
+		}
+		if time.Now().After(expireTime) {
 			return nil, errors.New(MyErr.TokenExpired)
 		}
 		return token, nil

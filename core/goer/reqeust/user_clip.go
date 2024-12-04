@@ -1,7 +1,7 @@
 package reqeust
 
 type AddUserClipRequest struct {
-	Content string `json:"content"`
+	Content string `json:"text"`
 }
 
 type UpdateUserClipRequest struct {

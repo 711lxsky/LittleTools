@@ -41,7 +41,7 @@ func PageUserClips(userId, pageNum, pageSize int) (*view.PageDataView, error) {
 	}
 	totalInt := int(total)
 	// 分页查询
-	offset := util.Max((pageNum-1)*pageSize, totalInt)
+	offset := util.Max((pageNum-1)*pageSize, totalInt-pageSize)
 	var userClips []model.UserClip
 	if err := config.DataBase.Model(&model.UserClip{}).
 		Where("user_id = ?", userId).

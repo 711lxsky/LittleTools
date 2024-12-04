@@ -12,7 +12,7 @@ func InitRouter(r *gin.Engine) {
 		// 普通剪切板上传
 		v1.POST("/clip-use", handler.NormalClipboardUse)
 		// 获取剪切板内容
-		v1.GET("/clip/:identifier", handler.NormalClipboardGet)
+		v1.POST("/clip/:identifier", handler.NormalClipboardGet)
 		// 注册
 		v1.POST("/register", handler.UserRegister)
 		// 登录

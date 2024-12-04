@@ -67,6 +67,7 @@ func AddUserClipboard(c *gin.Context) {
 		// 删除使用时间最早的记录
 		if err := service.DeleteUnusedClipForUser(userId); err != nil {
 			ResponseFail(c, http.StatusInternalServerError, MyErr.DataBaseDeleteError, err.Error())
+			return
 		}
 	}
 	// 新记录落库
@@ -97,6 +98,7 @@ func PageListUserClips(c *gin.Context) {
 	pageUserClips, err := service.PageUserClips(userId, pageCondition.PageNum, pageCondition.PageSize)
 	if err != nil {
 		ResponseFail(c, http.StatusInternalServerError, MyErr.DataBaseQueryError, err.Error())
+		return
 	}
 	ResponseSuccessWithData(c, pageUserClips)
 }

@@ -26,11 +26,13 @@ func UserLogin(c *gin.Context) {
 	if !util.CheckHashValid(userInDB.Password, ULReq.Password) {
 		// 密码错误
 		ResponseFail(c, http.StatusBadRequest, MyErr.PasswordError, "")
+		return
 	}
 	// 生成token返回
 	token, err := util.GenerateTokenWithUserInfo(userInDB.ID)
 	if err != nil {
 		ResponseFail(c, http.StatusInternalServerError, err.Error(), "")
+		return
 	}
 	ResponseSuccessWithData(c, token)
 }

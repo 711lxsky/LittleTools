@@ -36,6 +36,7 @@ func AddTodo(c *gin.Context) {
 		// 检查邮箱是否绑定
 		if !service.CheckUserEmailExist(userId) {
 			ResponseFail(c, http.StatusBadRequest, MyErr.UserEmailError, "")
+			return
 		}
 		status = model.StatusWaitingRemind
 	}
@@ -75,6 +76,7 @@ func PageTodoList(c *gin.Context) {
 	pageTodos, err := service.PageTodos(userId, pageCondition.PageNum, pageCondition.PageSize)
 	if err != nil {
 		ResponseFail(c, http.StatusInternalServerError, MyErr.DataBaseQueryError, err.Error())
+		return
 	}
 	ResponseSuccessWithData(c, pageTodos)
 }
@@ -94,11 +96,13 @@ func GetTodoDetailInfo(c *gin.Context) {
 	}
 	if detailR.Id == nil {
 		ResponseFail(c, http.StatusBadRequest, MyErr.DataCannotEmpty, "")
+		return
 	}
 	// 下到服务层进行查询
 	todoInfo, err := service.GetTodoInfo(userId, *detailR.Id)
 	if err != nil {
 		ResponseFail(c, http.StatusInternalServerError, MyErr.DataBaseQueryError, err.Error())
+		return
 	}
 	ResponseSuccessWithData(c, todoInfo)
 }
@@ -118,10 +122,12 @@ func DeleteTodo(c *gin.Context) {
 	}
 	if deleteR.Id == nil {
 		ResponseFail(c, http.StatusBadRequest, MyErr.DataCannotEmpty, "")
+		return
 	}
 	// 下到服务层进行删除
 	if err := service.DeleteTodo(userId, *deleteR.Id); err != nil {
 		ResponseFail(c, http.StatusInternalServerError, MyErr.DataBaseDeleteError, err.Error())
+		return
 	}
 	ResponseSuccess(c)
 }
@@ -141,6 +147,7 @@ func UpdateTodo(c *gin.Context) {
 	}
 	if updateR.Id == nil {
 		ResponseFail(c, http.StatusBadRequest, MyErr.DataCannotEmpty, "")
+		return
 	}
 	remindTime := updateR.RemindAt
 	updateStatus := updateR.Status
@@ -148,22 +155,27 @@ func UpdateTodo(c *gin.Context) {
 		// 检查时间是否合法
 		if remindTime.Before(time.Now()) {
 			ResponseFail(c, http.StatusBadRequest, MyErr.DataLogicError, "")
+			return
 		}
 		// 检查邮箱是否绑定
 		if !service.CheckUserEmailExist(userId) {
 			ResponseFail(c, http.StatusBadRequest, MyErr.UserEmailError, "")
+			return
 		}
 		// 检查在此情况下状态是否合法
 		if updateStatus != nil && *updateStatus == model.StatusDone {
 			ResponseFail(c, http.StatusBadRequest, MyErr.DataLogicError, "")
+			return
 		}
 	} else {
 		if updateStatus != nil && *updateStatus == model.StatusWaitingRemind {
 			ResponseFail(c, http.StatusBadRequest, MyErr.DataLogicError, "")
+			return
 		}
 	}
 	if err := service.UpdateTodo(userId, *updateR.Id, strings.TrimSpace(updateR.Title), strings.TrimSpace(updateR.Content), remindTime, updateStatus); err != nil {
 		ResponseFail(c, http.StatusInternalServerError, MyErr.DataBaseUpdateError, err.Error())
+		return
 	}
 	ResponseSuccess(c)
 }

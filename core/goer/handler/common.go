@@ -16,8 +16,13 @@ func getUserIdFromContext(c *gin.Context) int {
 	// 将 userId 转换为 int 类型
 	userIdInt, ok := userId.(int)
 	if !ok {
-		ResponseFail(c, http.StatusInternalServerError, MyErr.TypeAssertionError, "")
-		return MyErr.IntErrValue
+		userIdFloat, ok := userId.(float64)
+		if ok {
+			userIdInt = int(userIdFloat)
+		} else {
+			ResponseFail(c, http.StatusInternalServerError, MyErr.TypeAssertionError, "")
+			return MyErr.IntErrValue
+		}
 	}
 	return userIdInt
 }
